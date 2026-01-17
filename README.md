@@ -1,6 +1,51 @@
-# Productivity Command Center
+# 🎯 Ai-Tracker - Advanced Habit Tracking System v11
 
-A strict routine enforcer and productivity dashboard with SQL-based persistence.
+A comprehensive daily habit tracking application with intelligent state management, finalization logic, and advanced analytics. Built with Node.js, Express, and Chart.js.
+
+## ✨ Features
+
+### Core Tracking
+- **Daily Routines**: Track essential habits daily
+  - 📚 Learning Hours (with optional topics)
+  - 🏋️ Workout (type + confirmation toggle)
+  - 🌅 Wake-up Time (dynamic target-based)
+  - 📱 Screen Time (goals with warning thresholds)
+
+### Smart Task Management
+- **MITs (Most Important Tasks)**: 3 fixed daily priorities with state tracking
+- **Dynamic Tasks**: Add/remove tasks on-the-fly during the day
+- **Task Conflict Resolution**: Event delegation prevents modal conflicts
+- **MIT Binding**: ID-based selectors immune to DOM changes
+
+### Habit States (v11 System)
+- **COMPLETED**: All requirements met → Streak advances
+- **MISSED**: Failed to meet requirements → Streak breaks
+- **NOT_COUNTED**: Day not finalized → Streak pauses (neutral state)
+
+### Advanced Analytics
+- **Streak Tracking**: Individual streaks per habit with visualization
+- **Life Score**: Aggregate daily performance metric
+- **Charts & Graphs**:
+  - 📊 Skill Hours trend analysis
+  - 📈 Discipline Score tracking
+  - 😊 Mood & Productivity correlation
+  - 📱 Screen Time with goal reference line (line chart)
+- **History Timeline**: Visual timeline with status badges
+- **Weekly Stats**: Learning hours and gym session aggregation
+
+### Day Finalization
+- **Preview Mode**: See outcome before committing
+- **Consequences Display**: Understand streak impact
+- **Process Documentation**: Step-by-step finalize guide in settings
+- **Neutral Safety**: NOT_COUNTED state protects streaks
+
+### Settings & Customization
+- **Day Cutoff Time**: Define when your day starts/ends
+- **Habit Toggles**: Enable/disable tracking per habit
+- **Weekly Targets**: Set learning hour and gym session goals
+- **Non-Negotiables**: Define success criteria
+- **Streak Sensitivity**: Adjust how strict streaks are
+- **Adaptive Settings**: Modify based on performance
 
 ## 🚀 Quick Start
 
@@ -10,28 +55,42 @@ A strict routine enforcer and productivity dashboard with SQL-based persistence.
 
 ### Installation
 
-1. **Navigate to the project directory:**
-   ```bash
-   cd Ai-Tracker
-   ```
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/ai-tracker.git
+cd Ai-Tracker
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+# Install dependencies
+npm install
 
-3. **Start the server:**
-   ```bash
-   npm start
-   ```
+# Start the server
+npm start
+```
 
-4. **Open the dashboard:**
-   - Navigate to `http://localhost:3000/index.html` in your browser
+Open `http://localhost:3000` in your browser.
 
 ### Development Mode
-For auto-restart on file changes:
 ```bash
-npm run dev
+npm run dev  # Auto-restart on file changes
+```
+
+---
+
+## 📁 Project Structure
+
+```
+Ai-Tracker/
+├── server.js              # Express server (REST API)
+├── index.html             # Complete UI (1063 lines)
+├── script.js              # Frontend logic (5339 lines)
+├── style.css              # Responsive styling
+├── api.js                 # API endpoint handlers
+├── database.js            # SQLite persistence
+├── habitSystem.js         # Habit validation & state logic
+├── settingsAuthority.js   # Settings management
+├── package.json           # Dependencies
+├── .gitignore             # Git exclusions
+└── data/                  # Local SQLite database (gitignored)
 ```
 
 ---
