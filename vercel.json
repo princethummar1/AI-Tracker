@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "buildCommand": "npm install",
+  "framework": null,
+  "functions": {
+    "server.js": {
+      "memory": 1024,
+      "maxDuration": 60
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html",
+      "methods": ["GET"]
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
