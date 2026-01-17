@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productivity Command Center</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="./style.css">
+    <script src="./api.js"></script>
+    <script src="./habitSystem.js"></script>
+    <script src="./settingsAuthority.js"></script>
+</head>
+
+<body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle">
+        <button id="settings-btn" class="theme-btn" title="Settings">
+            <i class="fas fa-cog"></i>
+        </button>
+        <button id="theme-switch" class="theme-btn">
+            <i class="fas fa-moon"></i>
+            <i class="fas fa-sun"></i>
+        </button>
+    </div>
+
+    <!-- View Toggle -->
+    <div class="view-toggle">
+        <button class="view-btn active" data-view="dashboard">
+            <i class="fas fa-th-large"></i>
+            <span>Dashboard</span>
+        </button>
+        <button class="view-btn" data-view="history">
+            <i class="fas fa-history"></i>
+            <span>History</span>
+        </button>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- ============================================ -->
+        <!-- DASHBOARD VIEW -->
+        <!-- ============================================ -->
+        <div class="view-panel active" id="dashboard-view">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <h1 class="header-title">
+                    <span class="title-text">Command Center</span>
+                    <span class="title-subtext">Engineer Your Discipline</span>
+                </h1>
+                <div class="header-actions">
+                    <div class="day-state-badge-container">
+                        <span class="day-state-badge current state-not-started" id="current-day-state" title="Current day status">
+                            <span class="state-icon">○</span>
+                            <span class="state-text">Loading...</span>
+                        </span>
+                    </div>
+                    <button id="save-now-btn" class="save-btn" title="Finalize today - locks your day and affects streaks">
+                        <i class="fas fa-save"></i>
+                        <span>Finalize Day</span>
+                    </button>
+                    <div class="current-date" id="current-date">
+                        <!-- JS will populate this -->
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Year Vision Section -->
+        <section class="section year-vision">
+            <div class="section-header">
+                <h2><i class="fas fa-bullseye"></i> Year Vision</h2>
+                <div class="section-subtitle">Primary Focus: <span class="highlight">Skills → Job → Income</span></div>
+            </div>
+
+            <div class="year-stats-grid">
+                <!-- Life Score -->
+                <div class="vision-card">
+                    <div class="card-header">
+                        <h3>Life Score</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                    </div>
+                    <div class="life-score-container">
+                        <div class="score-ring">
+                            <svg width="120" height="120" viewBox="0 0 120 120">
+                                <circle class="score-ring-bg" cx="60" cy="60" r="54" fill="none" stroke-width="12">
+                                </circle>
+                                <circle class="score-ring-progress" cx="60" cy="60" r="54" fill="none" stroke-width="12"
+                                    stroke-linecap="round" transform="rotate(-90 60 60)"></circle>
+                            </svg>
+                            <div class="score-value">
+                                <span id="life-score">0</span>
+                            </div>
+                        </div>
+                        <div class="score-label">Discipline Consistency</div>
+                    </div>
+                </div>
+
+                <!-- Skill Hours -->
+                <div class="vision-card">
+                    <div class="card-header">
+                        <h3>Skill Hours</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                    </div>
+                    <div class="skill-hours-container">
+                        <div class="hours-total" id="total-skill-hours">0</div>
+                        <div class="hours-label">Total Hours Invested</div>
+                        <div class="hours-today">
+                            <span>Today: </span>
+                            <span id="today-skill-hours">0h</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Projects -->
+                <div class="vision-card">
+                    <div class="card-header">
+                        <h3>Projects Completed</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-code-branch"></i>
+                        </div>
+                    </div>
+                    <div class="projects-container">
+                        <div class="projects-count" id="projects-count">0</div>
+                        <div class="projects-label">Portfolio Ready</div>
+                        <button class="add-project-btn" id="add-project">
+                            <i class="fas fa-plus"></i> Add Project
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Job Status -->
+                <div class="vision-card">
+                    <div class="card-header">
+                        <h3>Job Status</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                    </div>
+                    <div class="job-status-container">
+                        <div class="job-status locked" id="job-status">
+                            <div class="status-icon">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <div class="status-text">LOCKED</div>
+                        </div>
+                        <div class="job-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="job-progress"></div>
+                            </div>
+                            <div class="progress-text">Complete milestones to unlock</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Weekly Discipline Section -->
+        <section class="section weekly-discipline">
+            <div class="section-header">
+                <h2><i class="fas fa-calendar-week"></i> Weekly Discipline</h2>
+                <div class="week-info">
+                    <span id="week-range">Week 1</span>
+                    <span class="week-reset" id="week-reset-info">Auto-resets in 7 days</span>
+                </div>
+            </div>
+
+            <div class="weekly-stats-grid">
+                <!-- Learning Target -->
+                <div class="week-card">
+                    <div class="week-card-header">
+                        <h3><i class="fas fa-graduation-cap"></i> Learning</h3>
+                        <div class="week-target">Target: <span>20h</span></div>
+                    </div>
+                    <div class="week-progress">
+                        <div class="week-progress-bar">
+                            <div class="week-progress-fill" id="learning-progress"></div>
+                        </div>
+                        <div class="week-stats">
+                            <span class="week-current" id="learning-hours">0h</span>
+                            <span class="week-streak">
+                                <i class="fas fa-fire"></i>
+                                <span id="learning-streak">0</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gym Target -->
+                <div class="week-card">
+                    <div class="week-card-header">
+                        <h3><i class="fas fa-dumbbell"></i> Gym Sessions</h3>
+                        <div class="week-target">Target: <span>5x</span></div>
+                    </div>
+                    <div class="week-progress">
+                        <div class="week-progress-bar">
+                            <div class="week-progress-fill" id="gym-progress"></div>
+                        </div>
+                        <div class="week-stats">
+                            <span class="week-current" id="gym-sessions">0</span>
+                            <span class="week-streak">
+                                <i class="fas fa-fire"></i>
+                                <span id="gym-streak">0</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weekly Consistency -->
+                <div class="week-card consistency-card">
+                    <div class="week-card-header">
+                        <h3><i class="fas fa-trophy"></i> Weekly Consistency</h3>
+                        <div class="week-target" id="edit-weekly-targets" title="Set your weekly goals">Set goals</div>
+                    </div>
+                    <div class="consistency-display">
+                        <div class="consistency-value" id="weekly-consistency">0%</div>
+                        <div class="consistency-bars">
+                            <div class="day-bar mon" data-day="Mon"><div class="day-bar-fill"></div></div>
+                            <div class="day-bar tue" data-day="Tue"><div class="day-bar-fill"></div></div>
+                            <div class="day-bar wed" data-day="Wed"><div class="day-bar-fill"></div></div>
+                            <div class="day-bar thu" data-day="Thu"><div class="day-bar-fill"></div></div>
+                            <div class="day-bar fri" data-day="Fri"><div class="day-bar-fill"></div></div>
+                            <div class="day-bar sat" data-day="Sat"><div class="day-bar-fill"></div></div>
+                            <div class="day-bar sun" data-day="Sun"><div class="day-bar-fill"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Daily Routine Section -->
+        <section class="section daily-routine">
+            <div class="section-header">
+                <h2><i class="fas fa-sun"></i> Daily Routine</h2>
+                <div class="daily-header-right">
+                    <div class="daily-date" id="daily-date">
+                        <!-- JS will populate -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="daily-grid">
+                <!-- Wake-up Time -->
+                <div class="daily-card wakeup-card">
+                    <div class="daily-card-header">
+                        <h3><i class="fas fa-bell"></i> Wake-up Time</h3>
+                        <div class="streak-display">
+                            <i class="fas fa-fire"></i>
+                            <span id="sleep-streak">0</span>
+                        </div>
+                    </div>
+                    <div class="wakeup-content">
+                        <div class="time-display">
+                            <input type="time" id="wakeup-time" class="time-input">
+                            <div class="time-status" id="wakeup-status">
+                                <span class="status-dot"></span>
+                                <span class="status-text" id="wakeup-status-text">Target: --:--</span>
+                            </div>
+                        </div>
+                        <div class="wakeup-note">
+                            Early risers capture the day
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Learning Done -->
+                <div class="daily-card learning-card">
+                    <div class="daily-card-header">
+                        <h3><i class="fas fa-book"></i> Learning Done</h3>
+                        <div class="streak-display">
+                            <i class="fas fa-fire"></i>
+                            <span id="daily-learning-streak">0</span>
+                        </div>
+                    </div>
+                    <div class="learning-content">
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="learning-toggle" class="toggle-input">
+                            <label for="learning-toggle" class="toggle-label">
+                                <span class="toggle-handle"></span>
+                            </label>
+                        </div>
+                        <div class="learning-input">
+                            <input type="text" id="learned-today" placeholder="What did you learn today?">
+                            <div class="hours-input">
+                                <span>Hours:</span>
+                                <input type="number" id="learning-hours-input" min="0" max="12" step="0.5" value="1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Workout Done -->
+                <div class="daily-card workout-card">
+                    <div class="daily-card-header">
+                        <h3><i class="fas fa-running"></i> Workout Done</h3>
+                        <div class="streak-display">
+                            <i class="fas fa-fire"></i>
+                            <span id="daily-workout-streak">0</span>
+                        </div>
+                    </div>
+                    <div class="workout-content">
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="workout-toggle" class="toggle-input">
+                            <label for="workout-toggle" class="toggle-label">
+                                <span class="toggle-handle"></span>
+                            </label>
+                        </div>
+                        <div class="workout-type">
+                            <select id="workout-type">
+                                <option value="gym">Gym</option>
+                                <option value="run">Run/Walk</option>
+                                <option value="home">Home Workout</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MITs -->
+                <div class="daily-card mits-card">
+                    <div class="daily-card-header">
+                        <h3><i class="fas fa-flag"></i> Most Important Tasks</h3>
+                        <div class="mits-count">0/3</div>
+                    </div>
+                    <div class="mits-content">
+                        <div class="mit-list">
+                            <div class="mit-item">
+                                <input type="checkbox" id="mit-1" class="mit-checkbox">
+                                <input type="text" class="mit-input" placeholder="MIT 1" id="mit-input-1">
+                            </div>
+                            <div class="mit-item">
+                                <input type="checkbox" id="mit-2" class="mit-checkbox">
+                                <input type="text" class="mit-input" placeholder="MIT 2" id="mit-input-2">
+                            </div>
+                            <div class="mit-item">
+                                <input type="checkbox" id="mit-3" class="mit-checkbox">
+                                <input type="text" class="mit-input" placeholder="MIT 3" id="mit-input-3">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Tasks -->
+                <div class="daily-card tasks-card">
+                    <div class="daily-card-header">
+                        <h3><i class="fas fa-tasks"></i> Dynamic Tasks</h3>
+                        <button class="add-task-btn" id="add-task-btn">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    <div class="tasks-content">
+                        <div class="tasks-list" id="tasks-list">
+                            <!-- Tasks will be added here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Screen Time -->
+                <div class="daily-card screen-card">
+                    <div class="daily-card-header">
+                        <h3><i class="fas fa-mobile-alt"></i> Screen Time</h3>
+                        <div class="screen-goal">Goal: <span>&lt;3h</span></div>
+                    </div>
+                    <div class="screen-content">
+                        <div class="screen-input">
+                            <input type="range" id="screen-time-slider" min="0" max="8" step="0.5" value="0">
+                            <div class="screen-value">
+                                <span id="screen-time-value">0</span>
+                                <span>hours</span>
+                            </div>
+                        </div>
+                        <div class="screen-status" id="screen-status">
+                            <span class="status-text">No data today</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mood Selector -->
+                <div class="daily-card mood-card">
+                    <div class="daily-card-header">
+                        <h3><i class="fas fa-smile"></i> Mood</h3>
+                        <div class="mood-score" id="mood-score">-</div>
+                    </div>
+                    <div class="mood-content">
+                        <div class="mood-selector">
+                            <div class="mood-option" data-value="1">
+                                <div class="mood-emoji">😞</div>
+                                <div class="mood-label">Poor</div>
+                            </div>
+                            <div class="mood-option" data-value="2">
+                                <div class="mood-emoji">😐</div>
+                                <div class="mood-label">Okay</div>
+                            </div>
+                            <div class="mood-option" data-value="3">
+                                <div class="mood-emoji">🙂</div>
+                                <div class="mood-label">Good</div>
+                            </div>
+                            <div class="mood-option" data-value="4">
+                                <div class="mood-emoji">😊</div>
+                                <div class="mood-label">Great</div>
+                            </div>
+                            <div class="mood-option" data-value="5">
+                                <div class="mood-emoji">🤩</div>
+                                <div class="mood-label">Excellent</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analytics Section -->
+        <section class="section analytics">
+            <div class="section-header">
+                <h2><i class="fas fa-chart-bar"></i> Analytics & Trends</h2>
+                <div class="analytics-period">
+                    <select id="analytics-period">
+                        <option value="7">Last 7 days</option>
+                        <option value="30">Last 30 days</option>
+                        <option value="90">Last 90 days</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="analytics-grid">
+                <!-- Skill Hours Graph -->
+                <div class="analytics-card graph-card">
+                    <div class="graph-header">
+                        <h3>Skill Hours Over Time</h3>
+                        <div class="graph-legend">
+                            <div class="legend-item">
+                                <span class="legend-color skill-color"></span>
+                                <span>Daily Hours</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="graph-container">
+                        <canvas id="skill-hours-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Discipline Score -->
+                <div class="analytics-card graph-card">
+                    <div class="graph-header">
+                        <h3>Weekly Discipline Score</h3>
+                        <div class="graph-legend">
+                            <div class="legend-item">
+                                <span class="legend-color discipline-color"></span>
+                                <span>Consistency %</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="graph-container">
+                        <canvas id="discipline-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Mood vs Productivity -->
+                <div class="analytics-card graph-card">
+                    <div class="graph-header">
+                        <h3>Mood vs Productivity</h3>
+                        <div class="graph-legend">
+                            <div class="legend-item">
+                                <span class="legend-color mood-color"></span>
+                                <span>Mood (1-5)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color productivity-color"></span>
+                                <span>Productivity</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="graph-container">
+                        <canvas id="mood-productivity-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Screen Time Trend -->
+                <div class="analytics-card graph-card">
+                    <div class="graph-header">
+                        <h3>Screen Time Trend</h3>
+                        <div class="graph-legend">
+                            <div class="legend-item">
+                                <span class="legend-color screen-color"></span>
+                                <span>Hours/Day</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="graph-container">
+                        <canvas id="screen-time-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Reset Notice -->
+        <div class="data-notice">
+            <p><i class="fas fa-database"></i> All data is stored locally in your browser. Clearing browser data will
+                reset your progress.</p>
+        </div>
+        </div><!-- End Dashboard View -->
+
+        <!-- ============================================ -->
+        <!-- HISTORY & INSIGHTS VIEW -->
+        <!-- ============================================ -->
+        <div class="view-panel" id="history-view">
+            
+            <!-- History Header with Stats -->
+            <section class="section history-header-section">
+                <div class="history-page-header">
+                    <div class="history-title-area">
+                        <h1><i class="fas fa-history"></i> Your Journey</h1>
+                        <p class="history-subtitle">Track your progress over time</p>
+                    </div>
+                    <div class="history-quick-stats">
+                        <div class="quick-stat">
+                            <span class="quick-stat-value" id="total-days-tracked">0</span>
+                            <span class="quick-stat-label">Days Tracked</span>
+                        </div>
+                        <div class="quick-stat">
+                            <span class="quick-stat-value" id="best-streak-ever">0</span>
+                            <span class="quick-stat-label">Best Streak</span>
+                        </div>
+                        <div class="quick-stat">
+                            <span class="quick-stat-value" id="avg-day-score">0</span>
+                            <span class="quick-stat-label">Avg Score</span>
+                        </div>
+                        <div class="quick-stat highlight">
+                            <span class="quick-stat-value" id="history-life-score">0</span>
+                            <span class="quick-stat-label">Life Score</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Activity Timeline (Main Focus) -->
+            <section class="section timeline-section-main">
+                <div class="timeline-header-bar">
+                    <div class="timeline-title">
+                        <h2><i class="fas fa-stream"></i> Activity Log</h2>
+                        <span class="log-count" id="log-count">0 entries</span>
+                    </div>
+                    <div class="timeline-controls">
+                        <div class="timeline-filter-group">
+                            <button class="filter-chip active" data-filter="all">All</button>
+                            <button class="filter-chip" data-filter="good">Good Days</button>
+                            <button class="filter-chip" data-filter="bad">Needs Work</button>
+                        </div>
+                        <select id="timeline-filter" class="timeline-select">
+                            <option value="7">Last 7 days</option>
+                            <option value="14">Last 14 days</option>
+                            <option value="30">Last 30 days</option>
+                            <option value="90">Last 3 months</option>
+                            <option value="365">All time</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="timeline-wrapper">
+                    <!-- Monthly Summary Cards -->
+                    <div class="month-summary-cards" id="month-summaries">
+                        <!-- Generated by JS -->
+                    </div>
+                    
+                    <!-- Timeline Container -->
+                    <div class="timeline-container modern" id="timeline-container">
+                        <!-- Timeline items will be generated by JS -->
+                        <div class="empty-state" id="timeline-empty">
+                            <i class="fas fa-calendar-day"></i>
+                            <p>No history yet. Start tracking to see your progress.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Calendar & Statistics Row -->
+            <section class="section history-grid-section">
+                <div class="history-grid">
+                    <!-- Calendar Heatmap -->
+                    <div class="history-card calendar-card">
+                        <div class="history-card-header">
+                            <h3><i class="fas fa-calendar-alt"></i> Activity Heatmap</h3>
+                            <div class="calendar-nav">
+                                <button class="cal-nav-btn" id="prev-month"><i class="fas fa-chevron-left"></i></button>
+                                <span id="calendar-month">January 2026</span>
+                                <button class="cal-nav-btn" id="next-month"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                        
+                        <div class="calendar-container">
+                            <div class="calendar-header">
+                                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                            </div>
+                            <div class="calendar-grid" id="calendar-grid">
+                                <!-- Days will be generated by JS -->
+                            </div>
+                            <div class="calendar-legend">
+                                <span class="legend-label">Less</span>
+                                <div class="legend-scale">
+                                    <div class="legend-box level-0"></div>
+                                    <div class="legend-box level-1"></div>
+                                    <div class="legend-box level-2"></div>
+                                    <div class="legend-box level-3"></div>
+                                    <div class="legend-box level-4"></div>
+                                </div>
+                                <span class="legend-label">More</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Historical Statistics -->
+                    <div class="history-card stats-card">
+                        <div class="history-card-header">
+                            <h3><i class="fas fa-chart-bar"></i> Statistics</h3>
+                            <select id="stats-period" class="stats-select">
+                                <option value="7">This Week</option>
+                                <option value="30" selected>This Month</option>
+                                <option value="90">3 Months</option>
+                            </select>
+                        </div>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-item learning-stat">
+                                <div class="stat-icon"><i class="fas fa-book"></i></div>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="stat-learning-hours">0h</span>
+                                    <span class="stat-label">Total Learning</span>
+                                </div>
+                                <div class="stat-bar">
+                                    <div class="stat-bar-fill" id="learning-bar"></div>
+                                </div>
+                                <span class="stat-percent" id="learning-consistency">0%</span>
+                            </div>
+                            
+                            <div class="stat-item gym-stat">
+                                <div class="stat-icon"><i class="fas fa-dumbbell"></i></div>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="stat-gym-sessions">0</span>
+                                    <span class="stat-label">Gym Sessions</span>
+                                </div>
+                                <div class="stat-bar">
+                                    <div class="stat-bar-fill" id="gym-bar"></div>
+                                </div>
+                                <span class="stat-percent" id="gym-consistency">0%</span>
+                            </div>
+                            
+                            <div class="stat-item sleep-stat">
+                                <div class="stat-icon"><i class="fas fa-moon"></i></div>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="stat-early-wakeups">0</span>
+                                    <span class="stat-label">Early Wakeups</span>
+                                </div>
+                                <div class="stat-bar">
+                                    <div class="stat-bar-fill" id="sleep-bar"></div>
+                                </div>
+                                <span class="stat-percent" id="sleep-consistency">0%</span>
+                            </div>
+                            
+                            <div class="stat-item screen-stat">
+                                <div class="stat-icon"><i class="fas fa-mobile-alt"></i></div>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="stat-avg-screen">0h</span>
+                                    <span class="stat-label">Avg Screen/Day</span>
+                                </div>
+                                <div class="stat-bar">
+                                    <div class="stat-bar-fill" id="screen-bar"></div>
+                                </div>
+                                <span class="stat-percent" id="screen-consistency">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Trends & Discipline Cards -->
+            <section class="section trends-rules-section">
+                <div class="trends-rules-grid">
+                    <!-- Trends Summary -->
+                    <div class="history-card trends-card">
+                        <div class="history-card-header">
+                            <h3><i class="fas fa-chart-line"></i> Trends</h3>
+                            <span class="trend-period">vs last week</span>
+                        </div>
+                        
+                        <div class="trends-grid compact">
+                            <div class="trend-item" id="trend-learning">
+                                <div class="trend-icon-mini"><i class="fas fa-book"></i></div>
+                                <span class="trend-name">Learning</span>
+                                <div class="trend-indicator" id="learning-trend-arrow"><i class="fas fa-minus"></i></div>
+                                <span class="trend-status-text" id="learning-trend-status">Stable</span>
+                            </div>
+                            
+                            <div class="trend-item" id="trend-gym">
+                                <div class="trend-icon-mini"><i class="fas fa-dumbbell"></i></div>
+                                <span class="trend-name">Gym</span>
+                                <div class="trend-indicator" id="gym-trend-arrow"><i class="fas fa-minus"></i></div>
+                                <span class="trend-status-text" id="gym-trend-status">Stable</span>
+                            </div>
+                            
+                            <div class="trend-item" id="trend-sleep">
+                                <div class="trend-icon-mini"><i class="fas fa-moon"></i></div>
+                                <span class="trend-name">Sleep</span>
+                                <div class="trend-indicator" id="sleep-trend-arrow"><i class="fas fa-minus"></i></div>
+                                <span class="trend-status-text" id="sleep-trend-status">Stable</span>
+                            </div>
+                            
+                            <div class="trend-item" id="trend-screen">
+                                <div class="trend-icon-mini"><i class="fas fa-mobile-alt"></i></div>
+                                <span class="trend-name">Screen</span>
+                                <div class="trend-indicator" id="screen-trend-arrow"><i class="fas fa-minus"></i></div>
+                                <span class="trend-status-text" id="screen-trend-status">Stable</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Discipline Rules -->
+                    <div class="history-card rules-card-modern">
+                        <div class="history-card-header">
+                            <h3><i class="fas fa-clipboard-check"></i> Discipline Check</h3>
+                            <span class="rules-score" id="rules-score">0/12</span>
+                        </div>
+                        
+                        <div class="rules-categories">
+                            <div class="rule-category">
+                                <div class="rule-category-header">
+                                    <span><i class="fas fa-graduation-cap"></i> Learning</span>
+                                    <div class="mini-progress"><div class="mini-progress-fill" id="learning-rules-bar"></div></div>
+                                </div>
+                                <div class="rule-checks">
+                                    <span class="rule-check" data-rule="learn-daily" title="Learn daily"></span>
+                                    <span class="rule-check" data-rule="learn-hours" title="2+ hours avg"></span>
+                                    <span class="rule-check" data-rule="learn-streak" title="7+ day streak"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="rule-category">
+                                <div class="rule-category-header">
+                                    <span><i class="fas fa-dumbbell"></i> Gym</span>
+                                    <div class="mini-progress"><div class="mini-progress-fill" id="gym-rules-bar"></div></div>
+                                </div>
+                                <div class="rule-checks">
+                                    <span class="rule-check" data-rule="gym-weekly" title="5x per week"></span>
+                                    <span class="rule-check" data-rule="gym-streak" title="5+ day streak"></span>
+                                    <span class="rule-check" data-rule="gym-consistency" title="80%+ consistency"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="rule-category">
+                                <div class="rule-category-header">
+                                    <span><i class="fas fa-bed"></i> Sleep</span>
+                                    <div class="mini-progress"><div class="mini-progress-fill" id="sleep-rules-bar"></div></div>
+                                </div>
+                                <div class="rule-checks">
+                                    <span class="rule-check" data-rule="sleep-wakeup" title="Wake by 5:45 AM"></span>
+                                    <span class="rule-check" data-rule="sleep-bedtime" title="Sleep before 11:30 PM"></span>
+                                    <span class="rule-check" data-rule="sleep-streak" title="7+ day streak"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="rule-category">
+                                <div class="rule-category-header">
+                                    <span><i class="fas fa-mobile-alt"></i> Screen</span>
+                                    <div class="mini-progress"><div class="mini-progress-fill" id="screen-rules-bar"></div></div>
+                                </div>
+                                <div class="rule-checks">
+                                    <span class="rule-check" data-rule="screen-limit" title="Under 3h daily"></span>
+                                    <span class="rule-check" data-rule="screen-avg" title="Avg under 2.5h"></span>
+                                    <span class="rule-check" data-rule="screen-zero" title="No 5+ hour days"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+        </div><!-- End History View -->
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settings-modal">
+        <div class="modal-content settings-modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-cog"></i> System Settings</h3>
+                <button class="modal-close" id="close-settings-modal">&times;</button>
+            </div>
+            <div class="modal-body settings-modal-body">
+                <!-- Day Cutoff -->
+                <div class="settings-section">
+                    <h4><i class="fas fa-clock"></i> Day Cutoff</h4>
+                    <p class="settings-description">When does your "day" end? After this time, logs go to the next day.</p>
+                    <div class="form-group">
+                        <label for="day-cutoff-hour">Cutoff Time</label>
+                        <select id="day-cutoff-hour">
+                            <option value="0">Midnight (12:00 AM)</option>
+                            <option value="1">1:00 AM</option>
+                            <option value="2" selected>2:00 AM</option>
+                            <option value="3">3:00 AM</option>
+                            <option value="4">4:00 AM</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Non-Negotiables -->
+                <div class="settings-section">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Non-Negotiables (Daily Habits)</h4>
+                    <p class="settings-description">These items must be completed for a day to count as "Completed". Toggle to enable/disable each habit.</p>
+                    <div class="settings-toggles habits-config">
+                        <label class="settings-toggle habit-config-item" data-habit="learning">
+                            <input type="checkbox" id="non-neg-learning" checked>
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">
+                                <i class="fas fa-book"></i> Learning
+                            </span>
+                            <span class="habit-config-details">Track daily learning hours</span>
+                        </label>
+                        <label class="settings-toggle habit-config-item" data-habit="gym">
+                            <input type="checkbox" id="non-neg-gym">
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">
+                                <i class="fas fa-dumbbell"></i> Gym/Workout
+                            </span>
+                            <span class="habit-config-details">Track workout sessions</span>
+                        </label>
+                        <label class="settings-toggle habit-config-item" data-habit="sleep">
+                            <input type="checkbox" id="non-neg-sleep" checked>
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">
+                                <i class="fas fa-moon"></i> Sleep on Time
+                            </span>
+                            <span class="habit-config-details">Track wake-up consistency</span>
+                        </label>
+                        <label class="settings-toggle habit-config-item" data-habit="screenTime">
+                            <input type="checkbox" id="non-neg-screen">
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">
+                                <i class="fas fa-mobile-alt"></i> Screen Time Goal
+                            </span>
+                            <span class="habit-config-details">Track phone usage limit</span>
+                        </label>
+                    </div>
+                    <div class="habit-config-note">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Disabled habits won't appear in daily routine or affect your streaks.</span>
+                    </div>
+                </div>
+
+                <!-- Streak Settings -->
+                <div class="settings-section">
+                    <h4><i class="fas fa-fire"></i> Streak Rules</h4>
+                    <p class="settings-description">How should partial completion affect streaks?</p>
+                    <div class="form-group">
+                        <label for="streak-sensitivity">Streak Sensitivity</label>
+                        <select id="streak-sensitivity">
+                            <option value="strict">Strict - Only Completed days continue streak</option>
+                            <option value="moderate" selected>Moderate - Partial days weaken but don't break</option>
+                            <option value="lenient">Lenient - Only Missed days break streak</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="settings-toggle">
+                            <input type="checkbox" id="skip-preserves-streak" checked>
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">Skip days preserve streak (frozen)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Not Counted Days Info -->
+                <div class="settings-section">
+                    <h4><i class="fas fa-pause-circle"></i> Not Counted Days</h4>
+                    <p class="settings-description">Days without a finalized save are "Not Counted" – your streak pauses with no penalty.</p>
+                    <div class="day-state-principle" style="margin-top: 10px;">
+                        <strong>v11 Design:</strong>
+                        <em>Silence is neutral. Only deliberate saves (Finalize Day) affect your streak – either positively (Completed) or negatively (Missed).</em>
+                    </div>
+                </div>
+
+                <!-- Scoring Weights -->
+                <div class="settings-section">
+                    <h4><i class="fas fa-chart-line"></i> Life Score Weights</h4>
+                    <p class="settings-description">How much does each factor affect your Life Score?</p>
+                    <div class="weight-sliders">
+                        <div class="weight-item">
+                            <label>Consistency</label>
+                            <input type="range" id="weight-consistency" min="0" max="100" value="40">
+                            <span class="weight-value">40%</span>
+                        </div>
+                        <div class="weight-item">
+                            <label>Streaks</label>
+                            <input type="range" id="weight-streaks" min="0" max="100" value="30">
+                            <span class="weight-value">30%</span>
+                        </div>
+                        <div class="weight-item">
+                            <label>Completion</label>
+                            <input type="range" id="weight-completion" min="0" max="100" value="30">
+                            <span class="weight-value">30%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Validation Requirements -->
+                <div class="settings-section">
+                    <h4><i class="fas fa-check-double"></i> Toggle Validation</h4>
+                    <p class="settings-description">What data is required when toggling items ON?</p>
+                    <div class="validation-rules">
+                        <div class="rule-item">
+                            <span class="rule-label"><i class="fas fa-book"></i> Learning ON requires:</span>
+                            <div class="rule-requirements">
+                                <label><input type="checkbox" id="req-learning-hours" checked> Hours > 0</label>
+                                <label><input type="checkbox" id="req-learning-topic"> Topic text</label>
+                            </div>
+                        </div>
+                        <div class="rule-item">
+                            <span class="rule-label"><i class="fas fa-dumbbell"></i> Workout ON requires:</span>
+                            <div class="rule-requirements">
+                                <label><input type="checkbox" id="req-workout-type" checked> Type selected</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Finalize Day Process -->
+                <div class="settings-section finalize-info">
+                    <h4><i class="fas fa-save"></i> How to Finalize Day (Save)</h4>
+                    <p class="settings-description">The "Finalize Day" button locks your day with the outcome below:</p>
+                    <div class="finalize-process">
+                        <div class="process-step">
+                            <strong>Step 1: Check Preview</strong><br>
+                            At the top, see what happens if you save: "% → Will be COMPLETED" or "Missing: [habits]"
+                        </div>
+                        <div class="process-step">
+                            <strong>Step 2: Click "Finalize Day"</strong><br>
+                            Locks the day. Your outcome is calculated based on enabled habits and their completion.
+                        </div>
+                        <div class="process-step">
+                            <strong>Step 3: Result Recorded</strong><br>
+                            COMPLETED → Streak continues. MISSED → Streak breaks. All data synced to History.
+                        </div>
+                    </div>
+                    <div class="finalize-reminder">
+                        <i class="fas fa-bell"></i>
+                        <p><strong>Pro Tip:</strong> Finalize before midnight or use Day Cutoff setting. Once finalized, you can't change it.</p>
+                    </div>
+                </div>
+
+                <!-- Day State Info - v11 System -->
+                <div class="settings-section day-state-info">
+                    <h4><i class="fas fa-info-circle"></i> Day States Explained (v11)</h4>
+                    <div class="state-explanations">
+                        <div class="state-item completed">
+                            <span class="state-badge">✓ COMPLETED</span>
+                            <span class="state-desc">Save pressed + All enabled habits validated → <strong>Streak continues</strong></span>
+                        </div>
+                        <div class="state-item missed">
+                            <span class="state-badge">✗ MISSED</span>
+                            <span class="state-desc">Save pressed + Requirements not met → <strong>Streak breaks</strong></span>
+                        </div>
+                        <div class="state-item not-counted">
+                            <span class="state-badge">⏸ NOT COUNTED</span>
+                            <span class="state-desc">No save pressed → <strong>Streak paused</strong> (neutral, no consequence)</span>
+                        </div>
+                    </div>
+                    <div class="day-state-principle">
+                        <i class="fas fa-lightbulb"></i>
+                        <p><strong>Core Principle:</strong> Only deliberate actions change outcomes. Silence should never feel like punishment.</p>
+                    </div>
+                    <p class="day-state-note"><i class="fas fa-info-circle"></i> Pressing "Finalize Day" locks your day and affects streaks. If you don't finalize, the day is NOT COUNTED (neutral).</p>
+                </div>
+
+                <!-- Data Management -->
+                <div class="settings-section">
+                    <h4><i class="fas fa-database"></i> Data Management</h4>
+                    <p class="settings-description">Manage your dashboard data and testing options.</p>
+                    <div class="data-actions">
+                        <button class="btn-action btn-dev" id="generate-test-data" title="Development only - Generates dummy data for testing">
+                            <i class="fas fa-flask"></i> Generate Test Data
+                            <span class="dev-badge">DEV</span>
+                        </button>
+                        <button class="btn-action btn-danger btn-dev" id="reset-all-data" title="Development only - Permanently deletes all data">
+                            <i class="fas fa-trash-alt"></i> Reset All Data
+                            <span class="dev-badge">DEV</span>
+                        </button>
+                    </div>
+                    <p class="dev-notice"><i class="fas fa-info-circle"></i> Dev buttons will be removed in production.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancel-settings">Cancel</button>
+                <button class="btn-primary" id="save-settings">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weekly Targets Modal -->
+    <div class="modal" id="weekly-targets-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-trophy"></i> Set Weekly Goals</h3>
+                <button class="modal-close" id="close-weekly-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="weekly-learning-input">Weekly Learning Hours Target</label>
+                    <input type="number" id="weekly-learning-input" min="1" max="100" placeholder="e.g., 20">
+                    <small>How many hours do you want to learn per week?</small>
+                </div>
+                <div class="form-group">
+                    <label for="weekly-gym-input">Weekly Gym Sessions Target</label>
+                    <input type="number" id="weekly-gym-input" min="1" max="14" placeholder="e.g., 5">
+                    <small>How many workout sessions per week?</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancel-weekly">Cancel</button>
+                <button class="btn-primary" id="save-weekly">Save Goals</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Project Modal -->
+    <div class="modal" id="project-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Project</h3>
+                <button class="modal-close" id="close-project-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="project-name">Project Name</label>
+                    <input type="text" id="project-name" placeholder="e.g., Portfolio Website">
+                </div>
+                <div class="form-group">
+                    <label for="project-hours">Hours Spent</label>
+                    <input type="number" id="project-hours" min="1" max="500" value="10">
+                </div>
+                <div class="form-group">
+                    <label for="project-status">Status</label>
+                    <select id="project-status">
+                        <option value="completed">Completed</option>
+                        <option value="in-progress">In Progress</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancel-project">Cancel</button>
+                <button class="btn-primary" id="save-project">Add Project</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="./script.js"></script>
+</body>
+
+</html>
