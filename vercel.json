@@ -3,10 +3,10 @@
   "buildCommand": "npm install",
   "framework": null,
   "builds": [
-    { "src": "server.js", "use": "@vercel/node" }
+    { "src": "api/server.js", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/server.js" },
+    { "src": "/api/(.*)", "dest": "/api/server.js" },
     { "src": "/(.*)", "dest": "/index.html", "methods": ["GET"] }
   ],
   "env": {

@@ -838,6 +838,9 @@ process.on('SIGTERM', async () => {
 });
 
 // Start the server
-startServer();
+const isServerless = !!process.env.VERCEL;
+if (!isServerless) {
+    startServer();
+}
 
 module.exports = app;
