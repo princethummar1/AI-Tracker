@@ -3,10 +3,17 @@
  * Productivity Command Center Backend
  */
 
+// Load environment variables
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const db = require('./database');
+
+// Use MongoDB for production (Vercel), SQLite for development
+const db = process.env.MONGODB_URI 
+    ? require('./database-mongodb')
+    : require('./database');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
